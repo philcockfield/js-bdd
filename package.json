@@ -1,0 +1,36 @@
+{
+  "name": "bdd",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "lodash": "^3.6.0"
+  },
+  "devDependencies": {
+    "babel": "^5.6.14",
+    "mocha": "^2.2.1",
+    "chai": "^2.2.0"
+  },
+  "scripts": {
+    "start": "node .",
+    "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register",
+    "tdd":  "./node_modules/mocha/bin/mocha --recursive --compilers js:babel/register --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "ui",
+    "testing",
+    "react",
+    "modular",
+    "design"
+  ],
+  "author": "Phil Cockfield",
+  "license": "MIT",
+  "bugs": {
+    "url": "/issues"
+  },
+  "homepage": ""
+}
