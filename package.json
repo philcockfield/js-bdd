@@ -1,7 +1,7 @@
 {
   "name": "bdd",
   "version": "0.0.1",
-  "description": "",
+  "description": "Behavior Driven Development DSL",
   "main": "index.js",
   "dependencies": {
     "lodash": "^3.6.0"
@@ -29,8 +29,5 @@
   ],
   "author": "Phil Cockfield",
   "license": "MIT",
-  "bugs": {
-    "url": "/issues"
-  },
-  "homepage": ""
+  "homepage": "https://github.com/philcockfield/js-bdd"
 }

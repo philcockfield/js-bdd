@@ -1,4 +1,4 @@
-# BDD (Behavior Driven Development)
+# BDD
 The "Behavior Driven Development" DSL (Domain Specific Language) allowing you to create apps that use the `describe` and `it` semantics from test frameworks such as RSpec, Mocha, Jasmine etc.
 
 
