@@ -1,5 +1,5 @@
 {
-  "name": "bdd",
+  "name": "js-bdd",
   "version": "0.0.1",
   "description": "Behavior Driven Development DSL",
   "main": "index.js",
