@@ -4,7 +4,7 @@ The "Behavior Driven Development" DSL (Domain Specific Language) allowing you to
 [![Build Status](https://travis-ci.org/philcockfield/js-bdd.svg)](https://travis-ci.org/philcockfield/js-bdd)
 
 
-# Test
+## Test
     npm test
     npm run tdd  # (Live reload)
 
