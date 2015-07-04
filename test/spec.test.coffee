@@ -1,5 +1,5 @@
 expect = require('chai').expect
-util = require('core-util')
+util = require('js-util')
 bdd = require('../')
 
 
@@ -7,8 +7,6 @@ bdd = require('../')
 describe 'Spec ("it")', ->
   beforeEach ->
     bdd.reset()
-
-
 
   it 'throws if there is no current [Suite]', ->
     fn = ->

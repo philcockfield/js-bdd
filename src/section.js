@@ -1,5 +1,6 @@
 import _ from 'lodash';
-var util = require('core-util');
+import * as util from 'js-util';
+
 
 
 
