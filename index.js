@@ -1,3 +1,1 @@
-'use strict'
-
-console.log('Started [bdd]');
+module.exports = require('./src/api.js');
