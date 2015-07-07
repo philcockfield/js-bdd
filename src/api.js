@@ -1,3 +1,6 @@
+/* global global window */
+/* eslint no-use-before-define:0 */
+
 import _ from 'lodash';
 import * as util from 'js-util';
 import * as localUtil from './util';
@@ -6,18 +9,42 @@ import suiteImport from './suite';
 import specImport from './spec';
 import sectionImport from './section';
 
-var suiteModule   = suiteImport(state);
-var specModule    = specImport(state);
+var suiteModule = suiteImport(state);
+var specModule = specImport(state);
 var sectionModule = sectionImport(state);
 
 
+var markSpecAsSkipped = (spec) => {
+  var parentSuite = spec.parentSuite;
+  spec.isSkipped = true;
+  state.skippedSpecs[spec.id] = spec;
+  state.skippedSuites[parentSuite.id] = parentSuite;
+  if (!_.includes(parentSuite.skippedSpecs, spec)) {
+    parentSuite.skippedSpecs.push(spec);
+  }
+  return spec;
+};
+
+
+var markSuiteAsSkipped = (suite) => {
+  suite.isSkipped = true;
+  state.skippedSuites[suite.id] = suite;
+
+  // Skip child specs.
+  suite.specs.forEach((item) => markSpecAsSkipped(item));
+
+  // Skip child suites.
+  suite.childSuites.forEach((item) => markSuiteAsSkipped(item)); // <== RECURSION.
+
+  return suite;
+};
 
 
 var namespaceMethod = function(namespace, invokeWithin) {
   var self = (this === api) ? (global || window) : this;
 
   // Format and store the namespace.
-  if (util.isBlank(namespace)) namespace = null;
+  if (util.isBlank(namespace)) { namespace = null; }
   if (namespace === null) {
     state.namespaces = [];
   } else {
@@ -35,7 +62,6 @@ var namespaceMethod = function(namespace, invokeWithin) {
   // Finish up.
   return api;
 };
-
 namespaceMethod.pop = () => state.namespaces.pop();
 
 
@@ -53,9 +79,9 @@ var api = {
     var result = [];
     _.keys(suites).forEach((key) => {
           let suite = suites[key];
-          if (!suite.isSkipped) result.push(suite);
+          if (!suite.isSkipped) { result.push(suite); }
         });
-    return _.uniq(result)
+    return _.uniq(result);
   },
 
 
@@ -102,7 +128,7 @@ var api = {
   */
   reset() {
     state.reset();
-    this.contextFactory = (type) => (global || window);
+    this.contextFactory = () => (global || window);
   },
 
 
@@ -114,7 +140,7 @@ var api = {
                   - 'section' etc
   @returns object.
   */
-  contextFactory(type) { return (global || window); },
+  contextFactory() { return (global || window); },
 
 
   /*
@@ -133,14 +159,14 @@ var api = {
     var self = api.contextFactory('suite');
 
     // Prepend the namespace for root suites (if there is one).
-    var isRoot = !state.currentSuite
+    var isRoot = !state.currentSuite;
     if (state.namespaces.length > 0 && isRoot) {
       var namespace = state.namespaces.join('::');
       name = `${ namespace }::${ name }`;
     }
 
     // Register the suite.
-    return suiteModule.describe(self, name, func)
+    return suiteModule.describe(self, name, func);
   },
 
 
@@ -176,7 +202,7 @@ var api = {
 
   @returns the Spec model.
   */
-  it(name, func) { return specModule.it(name, func) },
+  it(name, func) { return specModule.it(name, func); }
 };
 
 
@@ -210,7 +236,7 @@ api.describe.only = (name, func) => {
 
 
 /*
-The `.only` modifer that narrows the scope of Specs.
+The `.only` modifier that narrows the scope of Specs.
 
     This is cumulative, meaning that all Suites/Specs declared
     as `.only` will be included in the set.
@@ -220,7 +246,7 @@ api.it.only = (name, func) => {
   var result = api.it(name, func);
   result.isOnly = true;
   state.onlySuites[result.parentSuite.id] = result.parentSuite;
-  return result
+  return result;
 };
 
 
@@ -259,33 +285,9 @@ api.it.skip = (name, func) => {
 };
 
 
-// PRIVATE ----------------------------------------------------------------------------
 
 
-var markSuiteAsSkipped = (suite) => {
-  suite.isSkipped = true;
-  state.skippedSuites[suite.id] = suite;
 
-  // Skip child specs.
-  suite.specs.forEach((item) => markSpecAsSkipped(item));
-
-  // Skip child suites.
-  suite.childSuites.forEach((item) => markSuiteAsSkipped(item)); // <== RECURSION.
-
-  return suite;
-};
-
-
-var markSpecAsSkipped = (spec) => {
-  var parentSuite = spec.parentSuite;
-  spec.isSkipped = true;
-  state.skippedSpecs[spec.id] = spec;
-  state.skippedSuites[parentSuite.id] = parentSuite;
-  if (!_.includes(parentSuite.skippedSpecs, spec)) {
-    parentSuite.skippedSpecs.push(spec);
-  }
-  return spec;
-};
 
 
 

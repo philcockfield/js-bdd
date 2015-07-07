@@ -7,5 +7,5 @@ export var formatId = (id) => {
   return id
           .replace(/\ /g, '-')
           .replace(/\(/g, '[') // Prevent matching errors for BDD usage of parentheses in ID's.
-          .replace(/\)/g, ']')
+          .replace(/\)/g, ']');
 };

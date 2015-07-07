@@ -5,7 +5,7 @@ import * as localUtil from './util';
 
 
 export default function(state) {
-  return module = {
+  let module = {
     /*
     Declares a single spec/test.
 
@@ -21,7 +21,7 @@ export default function(state) {
     it(name, func) {
       // Setup initial conditions.
       var parentSuite = state.currentSuite;
-      if (!parentSuite) throw new Error('No current suite.');
+      if (!parentSuite){ throw new Error('No current suite.'); }
       name = name || 'Unnamed';
 
       // Determine if the spec is asynchronous.
@@ -40,7 +40,7 @@ export default function(state) {
 
         var i = 0;
         existingSpecs.forEach((item) => {
-              item.id = `${ item.id }(${ i })`
+              item.id = `${ item.id }(${ i })`;
               i += 1;
             });
         id = `${ id }(${ existingSpecs.length })`;
@@ -63,7 +63,7 @@ export default function(state) {
                          Immediately if the spec is not asynchronous.
         */
         invoke(self, options = {}, callback) {
-          if (!self) throw new Error('Must have a [this] context');
+          if (!self) { throw new Error('Must have a [this] context'); }
 
           // Wrangle optional parameters.
           if (!callback) {
@@ -75,7 +75,7 @@ export default function(state) {
 
           // Ensure there is a dummy callback to invoke (below) if none was passed.
           // NB: Saves multiple checks below.
-          if (!_.isFunction(callback)) callback = () => {};
+          if (!_.isFunction(callback)) { callback = () => {}; }
 
           // Don't continue if there is no function for the spec.
           if (!_.isFunction(func)) {
@@ -89,8 +89,8 @@ export default function(state) {
             args.push(callback);
             func.apply(self, args);
           } else {
-            func.call(self)
-            callback()
+            func.call(self);
+            callback();
           }
 
           return this;
@@ -98,9 +98,10 @@ export default function(state) {
       };
 
       // Finish up.
-      if (state.currentSection) spec.section = state.currentSection;
-      parentSuite.specs.push(spec)
-      return spec
+      if (state.currentSection) { spec.section = state.currentSection; }
+      parentSuite.specs.push(spec);
+      return spec;
     }
   };
-};
+  return module;
+}

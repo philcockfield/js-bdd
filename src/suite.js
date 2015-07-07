@@ -1,18 +1,87 @@
+/* global global window */
 import _ from 'lodash';
 import * as util from 'js-util';
 import * as localUtil from './util';
 
 
+var invokerFunction = (suite, handlers) => {
+  return (context, ...args) => {
+    handlers.forEach((func) => {
+        if (_.isFunction(func)) { func.apply(context, args); }
+    });
+  };
+};
+
+
+var isFuzzyMatch = (text, pattern) => {
+  pattern = pattern.toUpperCase();
+  text = text.toUpperCase();
+  if (pattern === text) { return true; }
+
+  var index = -1; // Remembers the position of last found character.
+
+  // Consider each pattern character one at a time.
+  for (var i in pattern) {
+    let char = pattern[i];
+    if (char === ' ') { continue; } // Ignore spaces.
+    index = text.indexOf(char, index + 1);
+    if (index === -1) { return false; }
+  }
+
+  // Matched.
+  return true;
+};
+
+
+
+var filterSuite = (suite, pattern, options = {}) => {
+  if(util.isBlank(pattern)) { return; }
+  pattern = _.trim(pattern);
+
+  // Clone the suite.
+  suite = _.clone(suite);
+  suite.childSuites = _.clone(suite.childSuites);
+
+  // Check if the suite is a match.
+  if (isFuzzyMatch(suite.name, pattern)) { return suite; }
+
+  // Check for matches on child suites.
+  var childSuites = suite.childSuites;
+  suite.childSuites = [];
+
+  var isChildMatched = false;
+  childSuites.forEach((childSuite) => {
+        let childMatched = filterSuite(childSuite, pattern, options);
+        if (childMatched) {
+          isChildMatched = true;
+          suite.childSuites.push(childSuite);
+        }
+      });
+
+  // Finish up.
+  return isChildMatched ? suite : undefined;
+};
+
+
+var walkSuite = (suite, func) => {
+  if (suite.isSkipped) { return; }
+  func.call(suite.meta.thisContext, suite);
+  suite.childSuites.forEach((childSuite) => walkSuite(childSuite, func)); // <== RECURSION.
+};
+
+
+
+// ----------------------------------------------------------------------------
+
 
 export default function(state) {
-  var _createSuite = (self, name, func) => {
+  var createSuite = (self, name, func) => {
     // Setup initial conditions.
     var parent = state.currentSuite;
-    var isRoot = !parent;
 
     // Build the unique ID.
     var id = name;
-    if (parent) id = `${ parent.id }::${ id }`;
+    if (parent) { id = `${ parent.id }::${ id }`; }
     id = localUtil.formatId(id);
 
     // Check if the suite already exists.
@@ -30,12 +99,16 @@ export default function(state) {
         childSuites: [],
         specs: [],
         skippedSpecs: [],
-        filter(pattern, options = {}) { return _filterSuite(suite, pattern, options) },
-        walk(func) { if (_.isFunction(func)) _walkSuite(suite, func) }
+        filter(pattern, options = {}) {
+          return filterSuite(suite, pattern, options);
+        },
+        walk(callback) {
+          if (_.isFunction(callback)) { walkSuite(suite, callback); }
+        }
       };
 
       // Attach handlers.
-      suite.beforeHandlers.invoke = _invokerFunction(suite, suite.beforeHandlers);
+      suite.beforeHandlers.invoke = invokerFunction(suite, suite.beforeHandlers);
 
       // Store parent references.
       if (parent) {
@@ -45,7 +118,7 @@ export default function(state) {
 
       // Store cross references between the suite and the [this] context
       // (only if a custom context was passed).
-      if (self !== (global || window)) self.suite = suite;
+      if (self !== (global || window)) { self.suite = suite; }
       suite.meta.thisContext = self;
     }
 
@@ -67,12 +140,11 @@ export default function(state) {
     }
 
     // Finish up.
-    if (state.currentSection) suite.section = state.currentSection;
+    if (state.currentSection) { suite.section = state.currentSection; }
     return suite;
   };
 
-
-  return module = {
+  let module = {
     /*
     Declares a Suite ("describe").
     @param self: The [this] context.
@@ -94,14 +166,14 @@ export default function(state) {
         var startingSuite = state.currentSuite;
         var names = name.replace(/^::/, '').replace(/::$/, '').split('::');
         var addDescribeAt = (index) => {
-              let isLast = index === names.length - 1
-              let name = names[index];
-              if (name) name = name.trim();
+              let isLast = index === names.length - 1;
+              let levelName = names[index];
+              if (levelName) { levelName = levelName.trim(); }
               let fn;
-              if (isLast) fn = func;
-              let currentSuite = _createSuite(self, name, fn);
+              if (isLast) { fn = func; }
+              let currentSuite = createSuite(self, levelName, fn);
               state.currentSuite = currentSuite;
-              if (!isLast) addDescribeAt(index + 1); // <== RECURSION.
+              if (!isLast) { addDescribeAt(index + 1); } // <== RECURSION.
               return currentSuite;
             };
         var suite = addDescribeAt(0);
@@ -109,7 +181,7 @@ export default function(state) {
 
       } else {
         // Simple suite name.
-        suite = _createSuite(self, name, func);
+        suite = createSuite(self, name, func);
       }
 
       // Finish up.
@@ -126,72 +198,7 @@ export default function(state) {
       }
     }
   };
-};
-
-// HELPERS ----------------------------------------------------------------------------
-
-
-var _invokerFunction = (suite, handlers) => {
-  return (context, ...args) => {
-    handlers.forEach((func) => {
-        if (_.isFunction(func)) func.apply(context, args);
-    });
-  };
-};
-
-
-var _isFuzzyMatch = (text, pattern) => {
-  pattern = pattern.toUpperCase();
-  text = text.toUpperCase();
-  if (pattern === text) return true;
-
-  var index = -1 // Remembers the position of last found character.
-
-  // Consider each pattern character one at a time.
-  for (var i in pattern) {
-    let char = pattern[i];
-    if (char === ' ') continue; // Ignore spaces.
-    index = text.indexOf(char, index+1);
-    if (index === -1) return false;
-  }
-
-  // Matched.
-  return true;
-};
-
-
-
-var _filterSuite = (suite, pattern, options = {}) => {
-  if(util.isBlank(pattern)) return;
-  pattern = _.trim(pattern);
-
-  // Clone the suite.
-  suite = _.clone(suite);
-  suite.childSuites = _.clone(suite.childSuites);
-
-  // Check if the suite is a match.
-  if (_isFuzzyMatch(suite.name, pattern)) return suite;
-
-  // Check for matches on child suites.
-  var childSuites = suite.childSuites;
-  suite.childSuites = [];
-
-  var isChildMatched = false;
-  childSuites.forEach((childSuite) => {
-        let childMatched = _filterSuite(childSuite, pattern, options)
-        if (childMatched) {
-          isChildMatched = true;
-          suite.childSuites.push(childSuite);
-        }
-      });
 
   // Finish up.
-  return isChildMatched ? suite : undefined;
-};
-
-
-var _walkSuite = (suite, func) => {
-  if (suite.isSkipped) return;
-  func.call(suite.meta.thisContext, suite);
-  suite.childSuites.forEach((childSuite) => _walkSuite(childSuite, func)); // <== RECURSION.
-};
+  return module;
+}

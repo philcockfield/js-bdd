@@ -8,7 +8,7 @@ import * as util from 'js-util';
 Represents a section within a Suite.
 */
 export default function(state) {
-  return module = {
+  let module = {
     /*
     Creates a new section model.
     */
@@ -22,24 +22,25 @@ export default function(state) {
       let formatItems = (...items) => {
           // console.log('items ||----', items);
           items = _.flatten(items);
-          items = _.filter(items, (item) => { return !item.isSkipped });
+          items = _.filter(items, (item) => { return !item.isSkipped; });
           return items;
       };
 
+      let section;
       let getSuites = () => {
-        return  _.filter(suite.childSuites, (item) => { return item.section === section })
+        return _.filter(suite.childSuites, (item) => { return item.section === section; });
       };
       let getSpecs = () => {
-        return _.filter(suite.specs, (item) => { return item.section === section })
+        return _.filter(suite.specs, (item) => { return item.section === section; });
       };
 
       // Define the section object.
-      let section = {
+      section = {
         suite: suite,
         name: name,
-        items:  () => { return formatItems(getSuites(), getSpecs()) },
-        suites: () => { return formatItems(getSuites()) },
-        specs:  () => { return formatItems(getSpecs()) },
+        items: () => { return formatItems(getSuites(), getSpecs()); },
+        suites: () => { return formatItems(getSuites()); },
+        specs: () => { return formatItems(getSpecs()); }
       };
 
       // Store the section on the suite.
@@ -57,4 +58,5 @@ export default function(state) {
       return section;
     }
   };
-};
+  return module;
+}

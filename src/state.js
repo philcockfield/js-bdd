@@ -1,6 +1,10 @@
 import _ from 'lodash';
 import { Handlers } from 'js-util';
 
+var resetObject = (obj) => {
+  _.keys(obj).forEach((key) => delete obj[key]);
+};
+
 
 var state = {
   namespaces: [],
@@ -27,9 +31,6 @@ var state = {
 
 
 
-var resetObject = (obj) => {
-  _.keys(obj).forEach((key) => delete obj[key]);
-};
 
 
 
