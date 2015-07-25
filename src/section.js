@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import * as util from 'js-util';
+import _ from "lodash";
+import * as util from "js-util";
 
 
 
@@ -13,14 +13,13 @@ export default function(state) {
     Creates a new section model.
     */
     create: (self, suite, name, func) => {
-      if (!suite) { throw new Error(`Section must be declared within a suite. See section named '${ name }.'`); }
-      if (state.currentSection) { throw new Error(`Cannot nest sections. See section named '${ name }.'`); }
+      if (!suite) { throw new Error(`Section must be declared within a suite. See section named "${ name }."`); }
+      if (state.currentSection) { throw new Error(`Cannot nest sections. See section named "${ name }."`); }
       if (util.isBlank(name)) {
-        name = 'Unnamed';
+        name = "Unnamed";
       }
 
       let formatItems = (...items) => {
-          // console.log('items ||----', items);
           items = _.flatten(items);
           items = _.filter(items, (item) => { return !item.isSkipped; });
           return items;

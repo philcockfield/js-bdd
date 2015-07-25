@@ -1,6 +1,6 @@
 _ = require('lodash')
 expect = require('chai').expect
-bdd = require('../')
+bdd = require('../src')
 
 
 describe 'ns (namespace)', ->

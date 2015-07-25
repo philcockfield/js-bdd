@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import { Handlers } from 'js-util';
+import _ from "lodash";
+import { Handlers } from "js-util";
 
 var resetObject = (obj) => {
   _.keys(obj).forEach((key) => delete obj[key]);

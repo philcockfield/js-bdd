@@ -5,7 +5,7 @@ Provides common string replacement on ID values.
 */
 export var formatId = (id) => {
   return id
-          .replace(/\ /g, '-')
-          .replace(/\(/g, '[') // Prevent matching errors for BDD usage of parentheses in ID's.
-          .replace(/\)/g, ']');
+          .replace(/\ /g, "-")
+          .replace(/\(/g, "[") // Prevent matching errors for BDD usage of parentheses in ID"s.
+          .replace(/\)/g, "]");
 };

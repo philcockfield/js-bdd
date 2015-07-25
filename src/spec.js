@@ -1,6 +1,8 @@
-import _ from 'lodash';
-import * as util from 'js-util';
-import * as localUtil from './util';
+/* eslint consistent-return:0 */
+
+import _ from "lodash";
+import * as util from "js-util";
+import * as localUtil from "./util";
 
 
 
@@ -21,8 +23,8 @@ export default function(state) {
     it(name, func) {
       // Setup initial conditions.
       var parentSuite = state.currentSuite;
-      if (!parentSuite){ throw new Error('No current suite.'); }
-      name = name || 'Unnamed';
+      if (!parentSuite){ throw new Error("No current suite."); }
+      name = name || "Unnamed";
 
       // Determine if the spec is asynchronous.
       var isAsync = false;
@@ -63,7 +65,7 @@ export default function(state) {
                          Immediately if the spec is not asynchronous.
         */
         invoke(self, options = {}, callback) {
-          if (!self) { throw new Error('Must have a [this] context'); }
+          if (!self) { throw new Error("Must have a [this] context"); }
 
           // Wrangle optional parameters.
           if (!callback) {
@@ -77,7 +79,7 @@ export default function(state) {
           // NB: Saves multiple checks below.
           if (!_.isFunction(callback)) { callback = () => {}; }
 
-          // Don't continue if there is no function for the spec.
+          // Don"t continue if there is no function for the spec.
           if (!_.isFunction(func)) {
             callback();
             return;

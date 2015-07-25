@@ -1,13 +1,13 @@
 /* global global window */
 /* eslint no-use-before-define:0 */
 
-import _ from 'lodash';
-import * as util from 'js-util';
-import * as localUtil from './util';
-import state from './state';
-import suiteImport from './suite';
-import specImport from './spec';
-import sectionImport from './section';
+import _ from "lodash";
+import * as util from "js-util";
+import * as localUtil from "./util";
+import state from "./state";
+import suiteImport from "./suite";
+import specImport from "./spec";
+import sectionImport from "./section";
 
 var suiteModule = suiteImport(state);
 var specModule = specImport(state);
@@ -49,7 +49,7 @@ var namespaceMethod = function(namespace, invokeWithin) {
     state.namespaces = [];
   } else {
     namespace = _.trim(namespace);
-    namespace = _.trim(namespace, ':');
+    namespace = _.trim(namespace, ":");
     state.namespaces.push(namespace);
   }
 
@@ -135,9 +135,9 @@ var api = {
   /*
   A factory function used to generate the [this] context for "describe" blocks.
   @returns type: String representing the type
-                  - 'suite'
-                  - 'spec'
-                  - 'section' etc
+                  - "suite"
+                  - "spec"
+                  - "section" etc
   @returns object.
   */
   contextFactory() { return (global || window); },
@@ -156,12 +156,12 @@ var api = {
   @param func: The describe block.
   */
   describe(name, func) {
-    var self = api.contextFactory('suite');
+    var self = api.contextFactory("suite");
 
     // Prepend the namespace for root suites (if there is one).
     var isRoot = !state.currentSuite;
     if (state.namespaces.length > 0 && isRoot) {
-      var namespace = state.namespaces.join('::');
+      var namespace = state.namespaces.join("::");
       name = `${ namespace }::${ name }`;
     }
 
@@ -171,7 +171,7 @@ var api = {
 
 
   /*
-  Invoked at the beginning of a suite's execution.
+  Invoked at the beginning of a suite"s execution.
   */
   before(func) { return suiteModule.before(func); },
 
@@ -185,7 +185,7 @@ var api = {
   */
   section(name, func) {
     var suite = state.currentSuite;
-    var self = api.contextFactory('section');
+    var self = api.contextFactory("section");
     return sectionModule.create(self, suite, name, func);
   },
 
@@ -222,7 +222,7 @@ api.describe.only = (name, func) => {
 
   // Check whether a nested hierarchy was specified
   // and if so update the state on the lowest descendent.
-  if (name && name.indexOf('::') < 0) {
+  if (name && name.indexOf("::") < 0) {
     suite = result;
   } else {
     suite = state.suites[localUtil.formatId(name)];
@@ -262,7 +262,7 @@ api.describe.skip = (name, func) => {
 
   // Check whether a nested hierarchy was specified
   // and if so update the state on the lowest descendent.
-  if (name && name.indexOf('::') < 0) {
+  if (name && name.indexOf("::") < 0) {
     suite = result;
   } else {
     suite = state.suites[localUtil.formatId(name)];

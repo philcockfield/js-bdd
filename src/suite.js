@@ -1,7 +1,9 @@
 /* global global window */
-import _ from 'lodash';
-import * as util from 'js-util';
-import * as localUtil from './util';
+/* eslint consistent-return:0 */
+
+import _ from "lodash";
+import * as util from "js-util";
+import * as localUtil from "./util";
 
 
 var invokerFunction = (suite, handlers) => {
@@ -23,7 +25,7 @@ var isFuzzyMatch = (text, pattern) => {
   // Consider each pattern character one at a time.
   for (var i in pattern) {
     let char = pattern[i];
-    if (char === ' ') { continue; } // Ignore spaces.
+    if (char === " ") { continue; } // Ignore spaces.
     index = text.indexOf(char, index + 1);
     if (index === -1) { return false; }
   }
@@ -153,18 +155,18 @@ export default function(state) {
     */
     describe(self, name, func) {
       // Setup initial conditions.
-      name = name || 'Unnamed';
+      name = name || "Unnamed";
 
       // Check for [::] and put into distinct "describe" blocks.
-      if (name.indexOf('::') !== -1) {
+      if (name.indexOf("::") !== -1) {
         // This allows common suite structures to be
         // declared concisely.
         // For example:
         //
-        //     describe 'Root::Child::GrandChild', ->
+        //     describe "Root::Child::GrandChild", ->
         //
         var startingSuite = state.currentSuite;
-        var names = name.replace(/^::/, '').replace(/::$/, '').split('::');
+        var names = name.replace(/^::/, "").replace(/::$/, "").split("::");
         var addDescribeAt = (index) => {
               let isLast = index === names.length - 1;
               let levelName = names[index];
