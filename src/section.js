@@ -8,7 +8,7 @@ import * as util from "js-util";
 Represents a section within a Suite.
 */
 export default function(state) {
-  let module = {
+  const module = {
     /*
     Creates a new section model.
     */

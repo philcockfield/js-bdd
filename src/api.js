@@ -8,39 +8,16 @@ import state from "./state";
 import suiteImport from "./suite";
 import specImport from "./spec";
 import sectionImport from "./section";
+import { describeOnly, itOnly } from "./modifier-only";
+import { describeSkip, itSkip } from "./modifier-skip";
 
-var suiteModule = suiteImport(state);
-var specModule = specImport(state);
-var sectionModule = sectionImport(state);
-
-
-var markSpecAsSkipped = (spec) => {
-  var parentSuite = spec.parentSuite;
-  spec.isSkipped = true;
-  state.skippedSpecs[spec.id] = spec;
-  state.skippedSuites[parentSuite.id] = parentSuite;
-  if (!_.includes(parentSuite.skippedSpecs, spec)) {
-    parentSuite.skippedSpecs.push(spec);
-  }
-  return spec;
-};
+const suiteModule = suiteImport(state);
+const specModule = specImport(state);
+const sectionModule = sectionImport(state);
 
 
-var markSuiteAsSkipped = (suite) => {
-  suite.isSkipped = true;
-  state.skippedSuites[suite.id] = suite;
 
-  // Skip child specs.
-  suite.specs.forEach((item) => markSpecAsSkipped(item));
-
-  // Skip child suites.
-  suite.childSuites.forEach((item) => markSuiteAsSkipped(item)); // <== RECURSION.
-
-  return suite;
-};
-
-
-var namespaceMethod = function(namespace, invokeWithin) {
+const namespaceMethod = function(namespace, invokeWithin) {
   var self = (this === api) ? (global || window) : this;
 
   // Format and store the namespace.
@@ -69,7 +46,7 @@ namespaceMethod.pop = () => state.namespaces.pop();
 // ----------------------------------------------------------------------------
 
 
-var api = {
+const api = {
   /*
   The filtered set of suites (after .only and .skip have been evalutated).
   @returns array.
@@ -209,80 +186,22 @@ var api = {
 // Modifiers -------------------------------------------------------------------
 
 
-/*
-The `.only` modifer that narrows the scope of Suites.
-
-    This is cumulative, meaning that all Suites/Specs declared
-    as `.only` will be included in the set.
-
-*/
-api.describe.only = (name, func) => {
-  var result = api.describe(name, func);
-  var suite;
-
-  // Check whether a nested hierarchy was specified
-  // and if so update the state on the lowest descendent.
-  if (name && name.indexOf("::") < 0) {
-    suite = result;
-  } else {
-    suite = state.suites[localUtil.formatId(name)];
-  }
-
-  // Store state.
-  suite.isOnly = true;
-  state.onlySuites[suite.id] = suite;
-  return result;
-};
+/**
+ * The `.only` modifer that narrows the scope of Suites.
+ *
+ *    This is cumulative, meaning that all Suites/Specs declared
+ *    as `.only` will be included in the set.
+ *
+ */
+api.describe.only = describeOnly(api.describe);
+api.it.only = itOnly(api.it);
 
 
-/*
-The `.only` modifier that narrows the scope of Specs.
-
-    This is cumulative, meaning that all Suites/Specs declared
-    as `.only` will be included in the set.
-
-*/
-api.it.only = (name, func) => {
-  var result = api.it(name, func);
-  result.isOnly = true;
-  state.onlySuites[result.parentSuite.id] = result.parentSuite;
-  return result;
-};
-
-
-// ----------------------------------------------------------------------------
-
-
-/*
-The `.skip` modifer that excludes the suite.
-*/
-api.describe.skip = (name, func) => {
-  var result = api.describe(name, func);
-  var suite;
-
-  // Check whether a nested hierarchy was specified
-  // and if so update the state on the lowest descendent.
-  if (name && name.indexOf("::") < 0) {
-    suite = result;
-  } else {
-    suite = state.suites[localUtil.formatId(name)];
-  }
-
-  // Store state.
-  markSuiteAsSkipped(suite);
-  return result;
-};
-
-
-
-/*
-The `.skip` modifer that narrows the scope of Specs.
-*/
-api.it.skip = (name, func) => {
-  var spec = api.it(name, func);
-  markSpecAsSkipped(spec);
-  return spec;
-};
+/**
+ * The `.skip` modifer that excludes the suites/specs.
+ */
+api.describe.skip = describeSkip(api.describe);
+api.it.skip = itSkip(api.it);
 
 
 
