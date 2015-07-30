@@ -101,6 +101,7 @@ export default function(state) {
         childSuites: [],
         specs: [],
         skippedSpecs: [],
+        parentSuite: undefined,
         filter(pattern, options = {}) {
           return filterSuite(suite, pattern, options);
         },
