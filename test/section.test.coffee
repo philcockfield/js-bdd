@@ -91,11 +91,11 @@ describe 'section', ->
       type = t
       { foo:123 }
     self = null
-    bdd.describe 'Foo', ->
+    suite = bdd.describe 'Foo', ->
       bdd.section 'MySection', ->
         self = @
     expect(type).to.equal 'section'
-    expect(self).to.eql { foo:123 }
+    expect(self).to.eql { foo:123, suite:suite }
 
 
   # ----------------------------------------------------------------------------

@@ -161,8 +161,13 @@ const api = {
   @returns the section object.
   */
   section(name, func) {
-    var suite = state.currentSuite;
-    var self = api.contextFactory("section");
+    const suite = state.currentSuite;
+    const self = api.contextFactory("section");
+
+    // Store the suite on the [this] object
+    // as long as it's not the [global] namespace.
+    if (self !== (global || window)) { self.suite = state.currentSuite; }
+
     return sectionModule.create(self, suite, name, func);
   },
 
