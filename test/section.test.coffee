@@ -68,6 +68,17 @@ describe 'section', ->
     expect(suite.sections[1].name).to.equal 'two'
 
 
+  it 'has an ID', ->
+    suite = bdd.describe 'Foo', ->
+      bdd.section 'my-section', ->
+      bdd.section 'my-section', ->
+      bdd.section 'bar', ->
+    expect(suite.sections[0].id).to.equal 'Foo[section-1]'
+    expect(suite.sections[1].id).to.equal 'Foo[section-2]'
+    expect(suite.sections[2].id).to.equal 'Foo[section-3]'
+
+
+
   it 'throw an error if a section is created within a section', ->
     fn = ->
       bdd.describe 'Foo', ->

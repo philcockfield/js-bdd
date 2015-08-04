@@ -34,7 +34,9 @@ export default function(state) {
       };
 
       // Define the section object.
+      let index = suite.sections ? suite.sections.length : 0;
       section = {
+        id: `${ suite.name }[section-${ index + 1 }]`,
         suite: suite,
         name: name,
         items: () => { return formatItems(getSuites(), getSpecs()); },
