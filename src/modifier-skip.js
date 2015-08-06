@@ -2,17 +2,6 @@ import _ from "lodash";
 import state from "./state";
 import * as localUtil from "./util";
 
-
-const markSuiteAsSkipped = (suite) => {
-  suite.isSkipped = true;
-  state.skippedSuites[suite.id] = suite;
-  suite.specs.forEach((item) => markSpecAsSkipped(item));
-  suite.childSuites.forEach((item) => markSuiteAsSkipped(item)); // <== RECURSION.
-  return suite;
-};
-
-
-
 const markSpecAsSkipped = (spec) => {
   var parentSuite = spec.parentSuite;
   spec.isSkipped = true;
@@ -24,6 +13,14 @@ const markSpecAsSkipped = (spec) => {
   return spec;
 };
 
+
+const markSuiteAsSkipped = (suite) => {
+  suite.isSkipped = true;
+  state.skippedSuites[suite.id] = suite;
+  suite.specs.forEach((item) => markSpecAsSkipped(item));
+  suite.childSuites.forEach((item) => markSuiteAsSkipped(item)); // <== RECURSION.
+  return suite;
+};
 
 
 

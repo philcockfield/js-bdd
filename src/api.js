@@ -3,7 +3,6 @@
 
 import _ from "lodash";
 import * as util from "js-util";
-import * as localUtil from "./util";
 import state from "./state";
 import suiteImport from "./suite";
 import specImport from "./spec";
