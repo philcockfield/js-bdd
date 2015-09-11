@@ -5,6 +5,9 @@ bdd = require('../src')
 
 
 describe 'bdd', ->
+  beforeEach -> bdd.reset()
+
+
   it 'removes all suites when `reset`', ->
     bdd.describe 'parent', ->
       bdd.describe 'child', ->

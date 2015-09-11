@@ -1,6 +1,5 @@
 import _ from "lodash";
 import state from "./state";
-import * as localUtil from "./util";
 
 const markSpecAsSkipped = (spec) => {
   var parentSuite = spec.parentSuite;
@@ -25,32 +24,5 @@ const markSuiteAsSkipped = (suite) => {
 
 
 
-
-export const describeSkip = (describe) => {
-  return (name, func) => {
-      let result = describe(name, func);
-      let suite;
-
-      // Check whether a nested hierarchy was specified
-      // and if so update the state on the lowest descendent.
-      if (name && name.indexOf("::") < 0) {
-        suite = result;
-      } else {
-        suite = state.suites[localUtil.formatId(name)];
-      }
-
-      // Store state.
-      markSuiteAsSkipped(suite);
-      return result;
-
-  };
-};
-
-
-export const itSkip = (it) => {
-  return (name, func) => {
-      let spec = it(name, func);
-      markSpecAsSkipped(spec);
-      return spec;
-  };
-};
+export const describeSkip = (suite) => { markSuiteAsSkipped(suite); };
+export const itSkip = (spec) => { markSpecAsSkipped(spec); };

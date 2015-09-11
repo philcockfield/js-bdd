@@ -7,6 +7,7 @@ import state from "./state";
 import suiteImport from "./suite";
 import specImport from "./spec";
 import sectionImport from "./section";
+import * as localUtil from "./util";
 import { describeOnly, itOnly } from "./modifier-only";
 import { describeSkip, itSkip } from "./modifier-skip";
 
@@ -183,7 +184,57 @@ const api = {
 
   @returns the Spec model.
   */
-  it(name, func) { return specModule.it(name, func); }
+  it(name, func) { return specModule.it(name, func); },
+
+
+
+  extend: {
+    /**
+     * Adds an extension to the "describe" statement.
+     * @param {string} extension:         The name of the extension to apply (eg. "only" or "skip").
+     * @param {function} handler(suite):  The function that is invoked upon upon creation.
+     */
+    describe(extension, handler) {
+      if (!_.isFunction(handler)) { throw new Error("A 'describe' extension handler must be provided."); }
+      if (api.describe[extension]) {
+        throw new Error(`An suite ('describe') extension named '${ extension }' already exists.`);
+      }
+
+      api.describe[extension] = (name, func) => {
+          const result = api.describe(name, func);
+
+          // Check whether a nested hierarchy was specified
+          // and if so update retrieve the lowest descendent.
+          let suite;
+          suite = (name && name.indexOf("::") < 0)
+                ? result
+                : state.suites[localUtil.formatId(name)];
+
+          // Pass the suite to the handler.
+          handler(suite);
+          return result;
+      };
+    },
+
+
+    /**
+     * Adds an extension to the "it" statement.
+     * @param {string} extension:         The name of the extension to apply (eg. "only" or "skip").
+     * @param {function} handler(suite):  The function that is invoked upon upon creation.
+     */
+    it(extension, handler) {
+      if (!_.isFunction(handler)) { throw new Error("An 'it' extension handler must be provided."); }
+      if (api.it[extension]) {
+        throw new Error(`An spec ('it') extension named '${ extension }' already exists.`);
+      }
+
+      api.it[extension] = (name, func) => {
+          const spec = api.it(name, func);
+          handler(spec);
+          return spec;
+      };
+    }
+  }
 };
 
 
@@ -197,15 +248,17 @@ const api = {
  *    as `.only` will be included in the set.
  *
  */
-api.describe.only = describeOnly(api.describe);
-api.it.only = itOnly(api.it);
+api.extend.describe("only", describeOnly);
+api.extend.it("only", itOnly);
+
 
 
 /**
  * The `.skip` modifer that excludes the suites/specs.
  */
-api.describe.skip = describeSkip(api.describe);
-api.it.skip = itSkip(api.it);
+api.extend.describe("skip", describeSkip);
+api.extend.it("skip", itSkip);
+
 
 
 
