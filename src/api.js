@@ -195,9 +195,10 @@ const api = {
      * @param {function} handler(suite):  The function that is invoked upon upon creation.
      */
     describe(extension, handler) {
-      if (!_.isFunction(handler)) { throw new Error("A 'describe' extension handler must be provided."); }
+      if (!_.isString(extension)) { throw new Error(`A 'describe/suite' extension name must be provided.`); }
+      if (!_.isFunction(handler)) { throw new Error(`A 'describe.${ extension }' extension handler must be provided.`); }
       if (api.describe[extension]) {
-        throw new Error(`An suite ('describe') extension named '${ extension }' already exists.`);
+        throw new Error(`A "describe" (suite) extension named '${ extension }' already exists.`);
       }
 
       api.describe[extension] = (name, func) => {
@@ -223,11 +224,11 @@ const api = {
      * @param {function} handler(suite):  The function that is invoked upon upon creation.
      */
     it(extension, handler) {
-      if (!_.isFunction(handler)) { throw new Error("An 'it' extension handler must be provided."); }
+      if (!_.isString(extension)) { throw new Error(`An 'it/spec' extension name must be provided.`); }
+      if (!_.isFunction(handler)) { throw new Error(`An 'it.${ extension }' extension handler must be provided.`); }
       if (api.it[extension]) {
-        throw new Error(`An spec ('it') extension named '${ extension }' already exists.`);
+        throw new Error(`An "it" (spec) extension named '${ extension }' already exists.`);
       }
-
       api.it[extension] = (name, func) => {
           const spec = api.it(name, func);
           handler(spec);
