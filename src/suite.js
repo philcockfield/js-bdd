@@ -94,6 +94,7 @@ export default function(state) {
       suite = {
         id: id,
         name: name,
+        params: util.functionParameters(func),
         meta: {}, // Object for consumers to store arbitrary meta-data on the suite.
         beforeHandlers: [],
         childSuites: [],

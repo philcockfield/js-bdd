@@ -24,6 +24,17 @@ describe 'Suite ("describe")', ->
     expect(suite.name).to.equal('Unnamed')
 
 
+  describe 'parameters', ->
+    it 'has no parameters', ->
+      suite = bdd.describe 'Foo', ->
+      expect(suite.params).to.eql []
+
+    it 'has the "done" parameters', ->
+      suite = bdd.describe 'Foo', (done) ->
+      expect(suite.params).to.eql ['done']
+
+
+
   describe 'Invoking the Suite', ->
     it 'invokes the "describe" block with the default context', ->
       self = null

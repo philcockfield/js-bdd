@@ -54,6 +54,7 @@ export default function(state) {
         name: name,
         parentSuite: parentSuite,
         isAsync: isAsync,
+        params: util.functionParameters(func),
         meta: {}, // Object for consumers to store arbitrary meta-data on the spec.
 
         /*

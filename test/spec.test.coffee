@@ -86,6 +86,20 @@ describe 'Spec ("it")', ->
 
 
 
+  describe 'parameters', ->
+    it 'has no parameters', ->
+      spec = null
+      bdd.describe 'Foo', ->
+        spec = bdd.it 'Bar', ->
+      expect(spec.params).to.eql []
+
+    it 'has the "done" parameters', ->
+      spec = null
+      bdd.describe 'Foo', ->
+        spec = bdd.it 'Bar', (done) ->
+      expect(spec.params).to.eql ['done']
+
+
   describe 'asynchronous specs ("done" callback)', ->
     describe 'is asynchronous', ->
       it 'single "done" callback', ->
