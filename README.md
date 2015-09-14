@@ -1,7 +1,9 @@
 # BDD
-The "Behavior Driven Development" DSL (Domain Specific Language) allowing you to create apps that use the `describe` and `it` semantics from test frameworks such as RSpec, Mocha, Jasmine etc.
 
 [![Build Status](https://travis-ci.org/philcockfield/js-bdd.svg)](https://travis-ci.org/philcockfield/js-bdd)
+
+The "Behavior Driven Development" DSL (Domain Specific Language) allowing you to create apps that use the `describe` and `it` semantics from test frameworks such as RSpec, Mocha, Jasmine etc.
+
 
 
 ## Test
