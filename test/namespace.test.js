@@ -1,5 +1,4 @@
 import R from "ramda";
-import _ from "lodash";
 import { expect } from "chai";
 import bdd from "../src";
 

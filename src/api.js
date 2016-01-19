@@ -1,7 +1,7 @@
 /* global global window */
 /* eslint no-use-before-define:0 */
 
-import _ from "lodash";
+import R from "ramda";
 import { isBlank } from "js-util";
 import state from "./state";
 import suiteImport from "./suite";
@@ -25,13 +25,15 @@ const namespaceMethod = function(namespace, invokeWithin) {
   if (namespace === null) {
     state.namespaces = [];
   } else {
-    namespace = _.trim(namespace);
-    namespace = _.trim(namespace, ":");
+    namespace = namespace
+                    .trim()
+                    .replace(/^:+/, "")
+                    .replace(/:+$/, "");
     state.namespaces.push(namespace);
   }
 
   // Invoke the scoped function if specified.
-  if (_.isFunction(invokeWithin)) {
+  if (R.is(Function, invokeWithin)) {
     invokeWithin.call(self);
     namespaceMethod.pop();
   }
@@ -52,13 +54,13 @@ const api = {
   @returns array.
   */
   suites() {
-    var suites = _.isEmpty(state.onlySuites) ? state.suites : state.onlySuites;
+    var suites = R.isEmpty(state.onlySuites) ? state.suites : state.onlySuites;
     var result = [];
-    _.keys(suites).forEach((key) => {
+    Object.keys(suites).forEach((key) => {
           let suite = suites[key];
           if (!suite.isSkipped) { result.push(suite); }
         });
-    return _.uniq(result);
+    return R.uniq(result);
   },
 
 
@@ -195,8 +197,8 @@ const api = {
      * @param {function} handler(suite):  The function that is invoked upon upon creation.
      */
     describe(extension, handler) {
-      if (!_.isString(extension)) { throw new Error(`A 'describe/suite' extension name must be provided.`); }
-      if (!_.isFunction(handler)) { throw new Error(`A 'describe.${ extension }' extension handler must be provided.`); }
+      if (!R.is(String, extension)) { throw new Error(`A 'describe/suite' extension name must be provided.`); }
+      if (!R.is(Function, handler)) { throw new Error(`A 'describe.${ extension }' extension handler must be provided.`); }
       if (api.describe[extension]) {
         throw new Error(`A "describe" (suite) extension named '${ extension }' already exists.`);
       }
@@ -224,8 +226,8 @@ const api = {
      * @param {function} handler(suite):  The function that is invoked upon upon creation.
      */
     it(extension, handler) {
-      if (!_.isString(extension)) { throw new Error(`An 'it/spec' extension name must be provided.`); }
-      if (!_.isFunction(handler)) { throw new Error(`An 'it.${ extension }' extension handler must be provided.`); }
+      if (!R.is(String, extension)) { throw new Error(`An 'it/spec' extension name must be provided.`); }
+      if (!R.is(Function, handler)) { throw new Error(`An 'it.${ extension }' extension handler must be provided.`); }
       if (api.it[extension]) {
         throw new Error(`An "it" (spec) extension named '${ extension }' already exists.`);
       }

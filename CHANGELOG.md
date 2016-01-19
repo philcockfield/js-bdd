@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 #### Changed
 - Updated to Babel-6.
+- Replaced `lodash` with `ramda`.
 
 #### Deprecated
 #### Removed

@@ -1,4 +1,4 @@
-import _ from "lodash";
+import R from "ramda";
 import { isBlank } from "js-util";
 
 
@@ -20,17 +20,17 @@ export default function(state) {
       }
 
       let formatItems = (...items) => {
-          items = _.flatten(items);
-          items = _.filter(items, (item) => { return !item.isSkipped; });
+          items = R.flatten(items);
+          items = items.filter(item => { return !item.isSkipped; });
           return items;
       };
 
       let section;
       let getSuites = () => {
-        return _.filter(suite.childSuites, (item) => { return item.section === section; });
+        return suite.childSuites.filter(item => { return item.section === section; });
       };
       let getSpecs = () => {
-        return _.filter(suite.specs, (item) => { return item.section === section; });
+        return suite.specs.filter(item => { return item.section === section; });
       };
 
       // Define the section object.
@@ -39,9 +39,9 @@ export default function(state) {
         id: `${ suite.name }[section-${ index + 1 }]`,
         suite: suite,
         name: name,
-        items: () => { return formatItems(getSuites(), getSpecs()); },
-        suites: () => { return formatItems(getSuites()); },
-        specs: () => { return formatItems(getSpecs()); }
+        items() { return formatItems(getSuites(), getSpecs()); },
+        suites() { return formatItems(getSuites()); },
+        specs() { return formatItems(getSpecs()); }
       };
 
       // Store the section on the suite.
@@ -49,7 +49,7 @@ export default function(state) {
       suite.sections.push(section);
 
       // Invoke the function to load in the child "describe/it" blocks.
-      if (_.isFunction(func)) {
+      if (R.is(Function, func)) {
         state.currentSection = section;
         func.call(self);
         state.currentSection = null;

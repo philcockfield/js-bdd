@@ -1,6 +1,6 @@
 /* eslint consistent-return:0 */
 
-import _ from "lodash";
+import R from "ramda";
 import { functionParameters } from "js-util";
 import * as localUtil from "./util";
 
@@ -28,7 +28,7 @@ export default function(state) {
 
       // Determine if the spec is asynchronous.
       var isAsync = false;
-      if (_.isFunction(func)) {
+      if (R.is(Function, func)) {
         isAsync = functionParameters(func).length > 0;
       }
 
@@ -37,7 +37,7 @@ export default function(state) {
       id = `spec|${ parentSuite.id }//${ id }`;
 
       // Increment the ID of any matching specs.
-      var existingSpecs = _.filter(parentSuite.specs, (item) => item.id === id);
+      var existingSpecs = parentSuite.specs.filter((item) => item.id === id);
       if (existingSpecs.length > 0) {
 
         var i = 0;
@@ -70,7 +70,7 @@ export default function(state) {
 
           // Wrangle optional parameters.
           if (!callback) {
-            if (_.isFunction(options)) {
+            if (R.is(Function, options)) {
               callback = options;
               options = {};
             }
@@ -78,10 +78,10 @@ export default function(state) {
 
           // Ensure there is a dummy callback to invoke (below) if none was passed.
           // NB: Saves multiple checks below.
-          if (!_.isFunction(callback)) { callback = () => {}; }
+          if (!R.is(Function, callback)) { callback = () => {}; }
 
           // Don"t continue if there is no function for the spec.
-          if (!_.isFunction(func)) {
+          if (!R.is(Function, func)) {
             callback();
             return;
           }

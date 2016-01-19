@@ -1,5 +1,6 @@
 /* eslint consistent-return:0 */
-import _ from "lodash";
+
+import R from "ramda";
 import { isBlank, functionParameters } from "js-util";
 import * as localUtil from "./util";
 
@@ -7,7 +8,7 @@ import * as localUtil from "./util";
 var invokerFunction = (suite, handlers) => {
   return (context, ...args) => {
     handlers.forEach((func) => {
-        if (_.isFunction(func)) { func.apply(context, args); }
+        if (R.is(Function, func)) { func.apply(context, args); }
     });
   };
 };
@@ -36,11 +37,11 @@ var isFuzzyMatch = (text, pattern) => {
 
 var filterSuite = (suite, pattern, options = {}) => {
   if(isBlank(pattern)) { return; }
-  pattern = _.trim(pattern);
+  pattern = pattern.trim();
 
   // Clone the suite.
-  suite = _.clone(suite);
-  suite.childSuites = _.clone(suite.childSuites);
+  suite = R.clone(suite);
+  suite.childSuites = R.clone(suite.childSuites);
 
   // Check if the suite is a match.
   if (isFuzzyMatch(suite.name, pattern)) { return suite; }
@@ -105,7 +106,7 @@ export default function(state) {
           return filterSuite(suite, pattern, options);
         },
         walk(callback) {
-          if (_.isFunction(callback)) { walkSuite(suite, callback); }
+          if (R.is(Function, callback)) { walkSuite(suite, callback); }
         }
       };
 
@@ -125,7 +126,7 @@ export default function(state) {
     }
 
     // Invoke the suite definition.
-    if (_.isFunction(func)) {
+    if (R.is(Function, func)) {
       state.currentSuite = suite;
       var thisContext = suite.meta.thisContext || (global || window);
       func.call(thisContext);
@@ -195,7 +196,7 @@ export default function(state) {
     Registers a function to run at the start of the suite.
     */
     before(func) {
-      if (_.isFunction(func) && state.currentSuite) {
+      if (R.is(Function, func) && state.currentSuite) {
         state.currentSuite.beforeHandlers.push(func);
       }
     }
