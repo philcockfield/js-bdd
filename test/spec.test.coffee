@@ -1,6 +1,6 @@
 expect = require('chai').expect
-util = require('js-util')
-bdd = require('../src')
+util = require('js-util').default
+bdd = require('../src').default
 
 
 

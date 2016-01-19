@@ -1,5 +1,5 @@
 expect = require('chai').expect
-bdd = require('../src')
+bdd = require('../src').default
 
 
 # ----------------------------------------------------------------------------
@@ -148,7 +148,6 @@ describe 'Suite ("describe")', ->
 
   it 'splits "::" into nested describe blocks', ->
     suite = bdd.describe('::root::child::grandChild::')
-    console.log 'suite.name', suite.name
     expect(suite.name).to.equal('root')
     expect(suite.childSuites[0].name).to.equal('child')
     expect(suite.childSuites[0].childSuites[0].name).to.equal('grandChild')

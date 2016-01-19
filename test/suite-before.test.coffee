@@ -1,5 +1,5 @@
 expect = require('chai').expect
-bdd = require('../src')
+bdd = require('../src').default
 
 
 # ----------------------------------------------------------------------------

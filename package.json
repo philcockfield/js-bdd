@@ -4,11 +4,12 @@
   "description": "Behavior Driven Development DSL",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel-register",
-    "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel-register --watch",
+    "test": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel-register,coffee:coffee-script/register",
+    "tdd": "./node_modules/mocha/bin/mocha --recursive --compilers js:babel-register,coffee:coffee-script/register --watch",
     "prepublish": "gulp lint && gulp build"
   },
   "dependencies": {
+    "coffee-script": "^1.10.0",
     "js-util": "^1.0.2",
     "lodash": "^3.6.0",
     "ramda": "^0.19.1"
