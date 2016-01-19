@@ -1,5 +1,5 @@
 import _ from "lodash";
-import * as util from "js-util";
+import util from "js-util";
 
 
 

@@ -1,7 +1,7 @@
 /* eslint consistent-return:0 */
 
 import _ from "lodash";
-import * as util from "js-util";
+import util from "js-util";
 import * as localUtil from "./util";
 
 

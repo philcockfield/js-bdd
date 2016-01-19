@@ -2,7 +2,7 @@
 /* eslint no-use-before-define:0 */
 
 import _ from "lodash";
-import * as util from "js-util";
+import util from "js-util";
 import state from "./state";
 import suiteImport from "./suite";
 import specImport from "./spec";

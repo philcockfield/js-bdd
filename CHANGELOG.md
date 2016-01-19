@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 #### Added
 #### Changed
+- Updated to Babel-6.
+
 #### Deprecated
 #### Removed
 #### Fixed

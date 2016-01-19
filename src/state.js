@@ -1,12 +1,9 @@
-import _ from "lodash";
-import { Handlers } from "js-util";
-
-var resetObject = (obj) => {
-  _.keys(obj).forEach((key) => delete obj[key]);
-};
+import util from "js-util";
+const { Handlers } = util;
+const resetObject = (obj) => Object.keys(obj).forEach((key) => delete obj[key]);
 
 
-var state = {
+const state = {
   namespaces: [],
   currentSuite: null,
   currentSection: null,
@@ -28,10 +25,6 @@ var state = {
     resetObject(state.skippedSpecs);
   }
 };
-
-
-
-
 
 
 export default state;
