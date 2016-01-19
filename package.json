@@ -9,8 +9,9 @@
     "prepublish": "gulp lint && gulp build"
   },
   "dependencies": {
+    "js-util": "^1.0.2",
     "lodash": "^3.6.0",
-    "js-util": "^1.0.2"
+    "ramda": "^0.19.1"
   },
   "devDependencies": {
     "babel-core": "^6.3.21",
