@@ -3,17 +3,18 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [Unreleased]
+## [Unreleased] - YYYY-MM-DD
 #### Added
 #### Changed
-- Updated to Babel-6.
-- Replaced `lodash` with `ramda`.
-
 #### Deprecated
 #### Removed
 #### Fixed
 #### Security
 
-## [0.0.1] - YYYY-MM-DD
+
+
+## [2.0.0] - 2016-01-19
 #### Added
-Initial creation and publish.
+#### Changed
+- Updated to Babel-6.
+- Replaced `lodash` with `ramda`.
