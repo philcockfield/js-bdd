@@ -2,7 +2,7 @@
 /* eslint no-use-before-define:0 */
 
 import _ from "lodash";
-import util from "js-util";
+import { isBlank } from "js-util";
 import state from "./state";
 import suiteImport from "./suite";
 import specImport from "./spec";
@@ -21,7 +21,7 @@ const namespaceMethod = function(namespace, invokeWithin) {
   var self = (this === api) ? (global || window) : this;
 
   // Format and store the namespace.
-  if (util.isBlank(namespace)) { namespace = null; }
+  if (isBlank(namespace)) { namespace = null; }
   if (namespace === null) {
     state.namespaces = [];
   } else {

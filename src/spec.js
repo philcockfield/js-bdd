@@ -1,7 +1,7 @@
 /* eslint consistent-return:0 */
 
 import _ from "lodash";
-import util from "js-util";
+import { functionParameters } from "js-util";
 import * as localUtil from "./util";
 
 
@@ -29,7 +29,7 @@ export default function(state) {
       // Determine if the spec is asynchronous.
       var isAsync = false;
       if (_.isFunction(func)) {
-        isAsync = util.functionParameters(func).length > 0;
+        isAsync = functionParameters(func).length > 0;
       }
 
       // Generate the ID.
@@ -54,7 +54,7 @@ export default function(state) {
         name: name,
         parentSuite: parentSuite,
         isAsync: isAsync,
-        params: util.functionParameters(func),
+        params: functionParameters(func),
         meta: {}, // Object for consumers to store arbitrary meta-data on the spec.
 
         /*

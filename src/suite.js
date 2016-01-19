@@ -1,6 +1,6 @@
 /* eslint consistent-return:0 */
 import _ from "lodash";
-import util from "js-util";
+import { isBlank, functionParameters } from "js-util";
 import * as localUtil from "./util";
 
 
@@ -35,7 +35,7 @@ var isFuzzyMatch = (text, pattern) => {
 
 
 var filterSuite = (suite, pattern, options = {}) => {
-  if(util.isBlank(pattern)) { return; }
+  if(isBlank(pattern)) { return; }
   pattern = _.trim(pattern);
 
   // Clone the suite.
@@ -94,7 +94,7 @@ export default function(state) {
       suite = {
         id: id,
         name: name,
-        params: util.functionParameters(func),
+        params: functionParameters(func),
         meta: {}, // Object for consumers to store arbitrary meta-data on the suite.
         beforeHandlers: [],
         childSuites: [],

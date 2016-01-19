@@ -1,5 +1,5 @@
 import _ from "lodash";
-import util from "js-util";
+import { isBlank } from "js-util";
 
 
 
@@ -15,7 +15,7 @@ export default function(state) {
     create: (self, suite, name, func) => {
       if (!suite) { throw new Error(`Section must be declared within a suite. See section named "${ name }."`); }
       if (state.currentSection) { throw new Error(`Cannot nest sections. See section named "${ name }."`); }
-      if (util.isBlank(name)) {
+      if (isBlank(name)) {
         name = "Unnamed";
       }
 

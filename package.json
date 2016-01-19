@@ -9,8 +9,7 @@
     "prepublish": "gulp lint && gulp build"
   },
   "dependencies": {
-    "coffee-script": "^1.10.0",
-    "js-util": "^1.0.2",
+    "js-util": "^2.0.1",
     "lodash": "^3.6.0",
     "ramda": "^0.19.1"
   },
@@ -24,6 +23,7 @@
     "babel-eslint": "5.0.0-beta6",
     "babel-register": "^6.3.13",
     "chai": "^2.2.0",
+    "coffee-script": "^1.10.0",
     "eslint": "^1.10.3",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.1",

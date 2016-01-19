@@ -1,5 +1,5 @@
 expect = require('chai').expect
-util = require('js-util').default
+delay = require('js-util').delay
 bdd = require('../src').default
 
 
@@ -155,7 +155,7 @@ describe 'Spec ("it")', ->
 
         spec.invoke { context:'foo' }, ->
           expect(context).to.eql { context:'foo' }
-          util.delay 5, -> done()
+          delay 5, -> done()
 
 
       it 'invokes the spec with arguments', (done) ->

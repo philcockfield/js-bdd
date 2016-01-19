@@ -1,5 +1,4 @@
-import util from "js-util";
-const { Handlers } = util;
+import Handlers from "js-util/lib/Handlers";
 const resetObject = (obj) => Object.keys(obj).forEach((key) => delete obj[key]);
 
 
