@@ -16,7 +16,6 @@ const specModule = specImport(state);
 const sectionModule = sectionImport(state);
 
 
-
 const namespaceMethod = function(namespace, invokeWithin) {
   var self = (this === api) ? (global || window) : this;
 
@@ -54,7 +53,7 @@ const api = {
   @returns array.
   */
   suites() {
-    var suites = R.isEmpty(state.onlySuites) ? state.suites : state.onlySuites;
+    var suites = Object.keys(state.onlySuites).length === 0 ? state.suites : state.onlySuites;
     var result = [];
     Object.keys(suites).forEach((key) => {
           let suite = suites[key];
