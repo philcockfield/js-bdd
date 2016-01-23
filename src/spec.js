@@ -1,13 +1,12 @@
 /* eslint consistent-return:0 */
-
-import R from "ramda";
-import { functionParameters } from "js-util";
-import * as localUtil from "./util";
-
+import R from 'ramda';
+import { functionParameters } from 'js-util';
+import * as localUtil from './util';
 
 
-export default function(state) {
-  let module = {
+
+export default function (state) {
+  const module = {
     /*
     Declares a single spec/test.
 
@@ -22,38 +21,37 @@ export default function(state) {
     */
     it(name, func) {
       // Setup initial conditions.
-      var parentSuite = state.currentSuite;
-      if (!parentSuite){ throw new Error("No current suite."); }
-      name = name || "Unnamed";
+      const parentSuite = state.currentSuite;
+      if (!parentSuite) { throw new Error('No current suite.'); }
+      name = name || 'Unnamed';
 
       // Determine if the spec is asynchronous.
-      var isAsync = false;
+      let isAsync = false;
       if (R.is(Function, func)) {
         isAsync = functionParameters(func).length > 0;
       }
 
       // Generate the ID.
-      var id = localUtil.formatId(name);
+      let id = localUtil.formatId(name);
       id = `spec|${ parentSuite.id }//${ id }`;
 
       // Increment the ID of any matching specs.
-      var existingSpecs = parentSuite.specs.filter((item) => item.id === id);
+      const existingSpecs = parentSuite.specs.filter((item) => item.id === id);
       if (existingSpecs.length > 0) {
-
-        var i = 0;
+        let i = 0;
         existingSpecs.forEach((item) => {
-              item.id = `${ item.id }(${ i })`;
-              i += 1;
-            });
+          item.id = `${ item.id }(${ i })`;
+          i += 1;
+        });
         id = `${ id }(${ existingSpecs.length })`;
       }
 
       // The [Spec] model.
-      var spec = {
-        id: id,
-        name: name,
-        parentSuite: parentSuite,
-        isAsync: isAsync,
+      const spec = {
+        id,
+        name,
+        parentSuite,
+        isAsync,
         params: functionParameters(func),
         meta: {}, // Object for consumers to store arbitrary meta-data on the spec.
 
@@ -66,7 +64,7 @@ export default function(state) {
                          Immediately if the spec is not asynchronous.
         */
         invoke(self, options = {}, callback) {
-          if (!self) { throw new Error("Must have a [this] context"); }
+          if (!self) { throw new Error('Must have a [this] context'); }
 
           // Wrangle optional parameters.
           if (!callback) {
@@ -78,9 +76,9 @@ export default function(state) {
 
           // Ensure there is a dummy callback to invoke (below) if none was passed.
           // NB: Saves multiple checks below.
-          if (!R.is(Function, callback)) { callback = () => {}; }
+          if (!R.is(Function, callback)) { callback = () => false; }
 
-          // Don"t continue if there is no function for the spec.
+          // Don't continue if there is no function for the spec.
           if (!R.is(Function, func)) {
             callback();
             return;
@@ -88,7 +86,7 @@ export default function(state) {
 
           // Invoke.
           if (isAsync) {
-            var args = options.args || [];
+            const args = options.args || [];
             args.push(callback);
             func.apply(self, args);
           } else {
@@ -97,14 +95,14 @@ export default function(state) {
           }
 
           return this;
-        }
+        },
       };
 
       // Finish up.
       if (state.currentSection) { spec.section = state.currentSection; }
       parentSuite.specs.push(spec);
       return spec;
-    }
+    },
   };
   return module;
 }

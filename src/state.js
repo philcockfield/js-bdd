@@ -1,4 +1,4 @@
-import Handlers from "js-util/lib/Handlers";
+import Handlers from 'js-util/lib/Handlers';
 const resetObject = (obj) => Object.keys(obj).forEach((key) => delete obj[key]);
 
 
@@ -22,7 +22,7 @@ const state = {
     resetObject(state.onlySuites);
     resetObject(state.skippedSuites);
     resetObject(state.skippedSpecs);
-  }
+  },
 };
 
 
