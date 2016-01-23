@@ -1,23 +1,23 @@
 /* global global window */
 /* eslint no-use-before-define:0 */
 
-import R from "ramda";
-import { isBlank } from "js-util";
-import state from "./state";
-import suiteImport from "./suite";
-import specImport from "./spec";
-import sectionImport from "./section";
-import * as localUtil from "./util";
-import { describeOnly, itOnly } from "./modifier-only";
-import { describeSkip, itSkip } from "./modifier-skip";
+import R from 'ramda';
+import { isBlank } from 'js-util';
+import state from './state';
+import suiteImport from './suite';
+import specImport from './spec';
+import sectionImport from './section';
+import * as localUtil from './util';
+import { describeOnly, itOnly } from './modifier-only';
+import { describeSkip, itSkip } from './modifier-skip';
 
 const suiteModule = suiteImport(state);
 const specModule = specImport(state);
 const sectionModule = sectionImport(state);
 
 
-const namespaceMethod = function(namespace, invokeWithin) {
-  var self = (this === api) ? (global || window) : this;
+const namespaceMethod = (namespace, invokeWithin) => {
+  const self = (this === api) ? (global || window) : this;
 
   // Format and store the namespace.
   if (isBlank(namespace)) { namespace = null; }
@@ -26,8 +26,8 @@ const namespaceMethod = function(namespace, invokeWithin) {
   } else {
     namespace = namespace
                     .trim()
-                    .replace(/^:+/, "")
-                    .replace(/:+$/, "");
+                    .replace(/^:+/, '')
+                    .replace(/:+$/, '');
     state.namespaces.push(namespace);
   }
 
@@ -53,12 +53,12 @@ const api = {
   @returns array.
   */
   suites() {
-    var suites = Object.keys(state.onlySuites).length === 0 ? state.suites : state.onlySuites;
-    var result = [];
+    const suites = Object.keys(state.onlySuites).length === 0 ? state.suites : state.onlySuites;
+    const result = [];
     Object.keys(suites).forEach((key) => {
-          let suite = suites[key];
-          if (!suite.isSkipped) { result.push(suite); }
-        });
+      const suite = suites[key];
+      if (!suite.isSkipped) { result.push(suite); }
+    });
     return R.uniq(result);
   },
 
@@ -88,10 +88,10 @@ const api = {
 
 
   /*
-  Registers a namespace within which to place suites ("describe").
+  Registers a namespace within which to place suites ('describe').
 
   @param namespace:     The namespace.
-                        Use "::" notation for nesting.
+                        Use '::' notation for nesting.
                         Pass null to reset.
 
   @param invokeWithin:  Optional. A function to invoke that registers Suites to be
@@ -111,11 +111,11 @@ const api = {
 
 
   /*
-  A factory function used to generate the [this] context for "describe" blocks.
+  A factory function used to generate the [this] context for 'describe' blocks.
   @returns type: String representing the type
-                  - "suite"
-                  - "spec"
-                  - "section" etc
+                  - 'suite'
+                  - 'spec'
+                  - 'section' etc
   @returns object.
   */
   contextFactory() { return (global || window); },
@@ -129,17 +129,17 @@ const api = {
 
 
   /*
-  Declares a Suite ("describe").
+  Declares a Suite ('describe').
   @param name: The name of the suite.
   @param func: The describe block.
   */
   describe(name, func) {
-    var self = api.contextFactory("suite");
+    const self = api.contextFactory('suite');
 
     // Prepend the namespace for root suites (if there is one).
-    var isRoot = !state.currentSuite;
+    const isRoot = !state.currentSuite;
     if (state.namespaces.length > 0 && isRoot) {
-      var namespace = state.namespaces.join("::");
+      const namespace = state.namespaces.join('::');
       name = `${ namespace }::${ name }`;
     }
 
@@ -149,7 +149,7 @@ const api = {
 
 
   /*
-  Invoked at the beginning of a suite"s execution.
+  Invoked at the beginning of a suite's execution.
   */
   before(func) { return suiteModule.before(func); },
 
@@ -163,7 +163,7 @@ const api = {
   */
   section(name, func) {
     const suite = state.currentSuite;
-    const self = api.contextFactory("section");
+    const self = api.contextFactory('section');
 
     // Store the suite on the [this] object
     // as long as it's not the [global] namespace.
@@ -191,52 +191,60 @@ const api = {
 
   extend: {
     /**
-     * Adds an extension to the "describe" statement.
-     * @param {string} extension:         The name of the extension to apply (eg. "only" or "skip").
+     * Adds an extension to the 'describe' statement.
+     * @param {string} extension:         The name of the extension to apply (eg. 'only' or 'skip').
      * @param {function} handler(suite):  The function that is invoked upon upon creation.
      */
     describe(extension, handler) {
-      if (!R.is(String, extension)) { throw new Error(`A 'describe/suite' extension name must be provided.`); }
-      if (!R.is(Function, handler)) { throw new Error(`A 'describe.${ extension }' extension handler must be provided.`); }
+      if (!R.is(String, extension)) {
+        throw new Error(`A 'describe/suite' extension name must be provided.`);
+      }
+      if (!R.is(Function, handler)) {
+        throw new Error(`A 'describe.${ extension }' extension handler must be provided.`);
+      }
       if (api.describe[extension]) {
-        throw new Error(`A "describe" (suite) extension named '${ extension }' already exists.`);
+        throw new Error(`A 'describe' (suite) extension named '${ extension }' already exists.`);
       }
 
       api.describe[extension] = (name, func) => {
-          const result = api.describe(name, func);
+        const result = api.describe(name, func);
 
-          // Check whether a nested hierarchy was specified
-          // and if so update retrieve the lowest descendent.
-          let suite;
-          suite = (name && name.indexOf("::") < 0)
-                ? result
-                : state.suites[localUtil.formatId(name)];
+        // Check whether a nested hierarchy was specified
+        // and if so update retrieve the lowest descendent.
+        let suite;
+        suite = (name && name.indexOf('::') < 0)
+              ? result
+              : state.suites[localUtil.formatId(name)];
 
-          // Pass the suite to the handler.
-          handler(suite);
-          return result;
+        // Pass the suite to the handler.
+        handler(suite);
+        return result;
       };
     },
 
 
     /**
-     * Adds an extension to the "it" statement.
-     * @param {string} extension:         The name of the extension to apply (eg. "only" or "skip").
+     * Adds an extension to the 'it' statement.
+     * @param {string} extension:         The name of the extension to apply (eg. 'only' or 'skip').
      * @param {function} handler(suite):  The function that is invoked upon upon creation.
      */
     it(extension, handler) {
-      if (!R.is(String, extension)) { throw new Error(`An 'it/spec' extension name must be provided.`); }
-      if (!R.is(Function, handler)) { throw new Error(`An 'it.${ extension }' extension handler must be provided.`); }
+      if (!R.is(String, extension)) {
+        throw new Error(`An 'it/spec' extension name must be provided.`);
+      }
+      if (!R.is(Function, handler)) {
+        throw new Error(`An 'it.${ extension }' extension handler must be provided.`);
+      }
       if (api.it[extension]) {
-        throw new Error(`An "it" (spec) extension named '${ extension }' already exists.`);
+        throw new Error(`An 'it' (spec) extension named '${ extension }' already exists.`);
       }
       api.it[extension] = (name, func) => {
-          const spec = api.it(name, func);
-          handler(spec);
-          return spec;
+        const spec = api.it(name, func);
+        handler(spec);
+        return spec;
       };
-    }
-  }
+    },
+  },
 };
 
 
@@ -250,16 +258,16 @@ const api = {
  *    as `.only` will be included in the set.
  *
  */
-api.extend.describe("only", describeOnly);
-api.extend.it("only", itOnly);
+api.extend.describe('only', describeOnly);
+api.extend.it('only', itOnly);
 
 
 
 /**
  * The `.skip` modifer that excludes the suites/specs.
  */
-api.extend.describe("skip", describeSkip);
-api.extend.it("skip", itSkip);
+api.extend.describe('skip', describeSkip);
+api.extend.it('skip', itSkip);
 
 
 
