@@ -1,6 +1,6 @@
 {
   "name": "js-bdd",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Behavior Driven Development DSL",
   "main": "./lib/index.js",
   "scripts": {
